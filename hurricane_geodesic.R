@@ -1,6 +1,6 @@
 #
 #
-trans_geodesic<-function(data,x="longitude",y="latitude",r_in="wind_inner_rad",
+hurricane_geodesic<-function(data,x="longitude",y="latitude",r_in="wind_inner_rad",
                        r_out="wind_outer_rad",quadrant="quadrant",
                        wind_speed="wind_speed",arcRes=1){
   

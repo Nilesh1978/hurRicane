@@ -55,6 +55,9 @@
 #Does the geom include a scale_radii parameter that functions as described?
 #
 #libraries
+library(ggmap)
+library(dplyr)
+library(geosphere)
 
 #set working directory
 pathname<-file.path(".","Week4Grob",fsep=.Platform$file.sep)
@@ -74,12 +77,13 @@ hur_hour<-"12"
 
 hur_datehour<-lubridate::ymd_h(paste(hur_year,hur_month,hur_day,hur_hour))
 
-storm_observation<-dplyr::filter_(tidy_ext_tracks,~storm_name==hur_name,~datehour==hur_datehour
+storm_observation<-dplyr::filter_(tidy_ext_tracks,
+                                  ~storm_name==hur_name,
+                                  ~datehour==hur_datehour
                                   )
-plot_data<-trans_geodesic(storm_observation,arcRes = .1)                                  
+plot_data<-hurricane_geodesic(storm_observation,arcRes = .1)                                  
 
-library(ggmap)
-library(dplyr)
+
 
 get_map("Louisiana", zoom = 6, maptype = "toner-background") %>%
 ggmap(extent = "device") + geom_polygon(data=plot_data,mapping=aes(x=longitude,
