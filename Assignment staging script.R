@@ -81,7 +81,7 @@ storm_observation<-dplyr::filter_(tidy_ext_tracks,
                                   ~storm_name==hur_name,
                                   ~date==hur_datehour
                                   )
-plot_data<-hurricane_geodesic(storm_observation,arcRes = .1)                                  
+plot_data<-hurricane_geodesic(storm_observation,arcRes = 1)                                  
 
 
 
@@ -89,13 +89,26 @@ p<-get_map(location=unique(c(storm_observation$longitude,storm_observation$latit
            zoom = 6, maptype = "toner-background") %>%
 ggmap(extent = "device") + geom_hurricane(data=storm_observation,
                                         mapping=aes(x=longitude,y=latitude,
-                                                    r_in=wind_inner_rad,
-                                                    r_out=wind_outer_rad,
-                                                    
-                                                    fill=wind_speed,
-                                                    color=wind_speed))+ 
+                                                    r=wind_radius,
+                                                    wind_speed=wind_speed,
+                                                    quadrant=quadrant,
+                                                    fill=as.factor(wind_speed),
+                                                    color=as.factor(wind_speed)))+ 
                             scale_color_manual(name = "Wind speed (kts)", 
                                                          values = c("red", "orange", "yellow")) + 
                           scale_fill_manual(name = "Wind speed (kts)", 
                                                             values = c("red", "orange", "yellow"))
-p                   
+p  
+
+#Compare to Polygon call
+p<-get_map(location=unique(c(storm_observation$longitude,storm_observation$latitude)),
+           zoom = 6, maptype = "toner-background") %>%
+  ggmap(extent = "device") + geom_polygon(data=plot_data,
+                                            mapping=aes(x=longitude,y=latitude,
+                                            fill=as.factor(wind_speed),
+                                            color=as.factor(wind_speed)),alpha=0.6)+ 
+  scale_color_manual(name = "Wind speed (kts)", 
+                     values = c("red", "orange", "yellow")) + 
+  scale_fill_manual(name = "Wind speed (kts)", 
+                    values = c("red", "orange", "yellow"))
+p  
