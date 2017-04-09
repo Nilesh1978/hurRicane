@@ -81,11 +81,11 @@ storm_observation<-dplyr::filter_(tidy_ext_tracks,
                                   ~storm_name==hur_name,
                                   ~datehour==hur_datehour
                                   )
-plot_data<-hurricane_geodesic(storm_observation,arcRes = 45)                                  
+plot_data<-hurricane_geodesic(storm_observation,arcRes = 90)                                  
 
 
 
-get_map("Louisiana", zoom = 6, maptype = "toner-background") %>%
+p<-get_map("Louisiana", zoom = 6, maptype = "toner-background") %>%
 ggmap(extent = "device") + geom_polygon(data=filter(plot_data,wind_speed==34),
                                         mapping=aes(x=lon,y=lat,
                                                     fill=wind_speed,

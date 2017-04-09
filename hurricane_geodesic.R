@@ -28,30 +28,33 @@ hurricane_geodesic<-function(data,x="longitude",y="latitude",r_in="wind_inner_ra
                          arc_data$end_angle[i],
                          by=arcRes),arc_data$end_angle[i]))
     
-    #This was necessary to plot the polygon in the right order;
+    #This wasn't necessary to have two sequences, but I left the ability just incase.
     temp_s2<-temp_s1
     
-    points1<-data.frame(geosphere::destPoint(p=temp_p,
+    #Finally geocode arcs for plotting
+    inner_pts<-data.frame(geosphere::destPoint(p=temp_p,
                                  d=temp_d1,
                                  b=temp_s1))
-    points1$angle<-temp_s1
-    points1$radtype<-"inner"
-    points1$rad<-temp_d1
-    points1<-points1[order(points1$angle),]
+    inner_pts$angle<-temp_s1
+    inner_pts$radtype<-"inner"
+    inner_pts$rad<-temp_d1
+    inner_pts<-inner_pts[order(inner_pts$angle),]
     
-    points2<-data.frame(geosphere::destPoint(p=temp_p,
+    
+    outer_pts<-data.frame(geosphere::destPoint(p=temp_p,
                                  d=temp_d2,
                                  b=temp_s2))
-    points2$angle<-temp_s2
-    points2$radtype<-"outer"
-    points2$rad<-temp_d2
-    points2<-points2[order(points1$angle,decreasing = TRUE),]
+    outer_pts$angle<-temp_s2
+    outer_pts$radtype<-"outer"
+    outer_pts$rad<-temp_d2
+    outer_pts<-outer_pts[order(outer_pts$angle,decreasing = TRUE),]
     
-    points<-dplyr::bind_rows(points1,points2)
+    points<-dplyr::bind_rows(inner_pts,outer_pts)
     points[,names(arc_data)]<-arc_data[i,]
     if (i==1) out<-points
     if(i>1) out<-dplyr::bind_rows(out,points)
   }#end for loop
+  
   out$quadrant<-factor(out$quadrant,levels=c("nw","sw","se","ne"))
   out$order<-out$angle
   out$order[out$radtype=="inner"]<- -out$order[out$radtype=="inner"]
