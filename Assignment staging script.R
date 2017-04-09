@@ -69,30 +69,33 @@ ext_tracks<-read_ext_tracks(file="ebtrk_atlc_1988_2015.txt")
 tidy_ext_tracks<-tidy_tracks(ext_tracks=ext_tracks)
 
 #Filter data for our assignment; Ike at a single point in time over land
-hur_name<-"KATRINA"
-hur_year<-2005
-hur_month<-"08"
-hur_day<-"29"
+hur_name<-"IKE"
+hur_year<-2008
+hur_month<-"09"
+hur_day<-"13"
 hur_hour<-"12"
 
 hur_datehour<-lubridate::ymd_h(paste(hur_year,hur_month,hur_day,hur_hour))
 
 storm_observation<-dplyr::filter_(tidy_ext_tracks,
                                   ~storm_name==hur_name,
-                                  ~datehour==hur_datehour
+                                  ~date==hur_datehour
                                   )
 plot_data<-hurricane_geodesic(storm_observation,arcRes = .1)                                  
 
 
 
-p<-get_map("Louisiana", zoom = 6, maptype = "toner-background") %>%
-ggmap(extent = "device") + geom_polygon(data=plot_data,
-                                        mapping=aes(x=lon,y=lat,
+p<-get_map(location=unique(c(storm_observation$longitude,storm_observation$latitude)),
+           zoom = 6, maptype = "toner-background") %>%
+ggmap(extent = "device") + geom_hurricane(data=storm_observation,
+                                        mapping=aes(x=longitude,y=latitude,
+                                                    r_in=wind_inner_rad,
+                                                    r_out=wind_outer_rad,
+                                                    
                                                     fill=wind_speed,
-                                                    color=wind_speed)
-                                                      )+ 
+                                                    color=wind_speed))+ 
                             scale_color_manual(name = "Wind speed (kts)", 
                                                          values = c("red", "orange", "yellow")) + 
                           scale_fill_manual(name = "Wind speed (kts)", 
                                                             values = c("red", "orange", "yellow"))
-                   
+p                   

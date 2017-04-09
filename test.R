@@ -53,21 +53,15 @@ hurricane_geodesic<-function(data,x="longitude",y="latitude",r_in="wind_inner_ra
     if(i>1) out<-dplyr::bind_rows(out,points)
   }#end for loop
   
-  #Sort for plotting and remove collection of points at 0 (radius==zero)
   out$quadrant<-factor(out$quadrant,levels=c("ne","se","sw","nw"))
   out<-dplyr::arrange_(out,~wind_speed,~radtype,~quadrant,~angle)
   out<-dplyr::filter_(out,~rad>0)
-  
-  #Rename the lon/lat from destPoint() to the input variable name usually 
-  #   longitude, latitude.
-  out<-dplyr::rename_(out,.dots=setNames(list(~lon,~lat),c(x,y)))
-  
-  #clear out extra variables
   out$r_in<-NULL
   out$r_out<-NULL
   out$start_angle<-NULL
   out$end_angle<-NULL
   out$x<-NULL
   out$y<-NULL
+  out$wind_speed<-as.factor(out$wind_speed)
   return(out)
 }#end compute_group

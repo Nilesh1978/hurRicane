@@ -4,24 +4,26 @@
 #'
 #'
 #'
-GeomHurricane<-ggproto("GeomHurricane",Geom,
-        
-          #Just creating an inherited Polygon geom with default overrides
-          #geom_ call will have stat_hurricane as default to do the heavy lifing
-          default_aes=aes(alpha=.4)
+GeomHurricane<-ggproto("GeomHurricane",GeomPolygon,
+                      required_aes = c("x","y","r_in","r_out","quadrant","wind_speed"),
+                      default_aes = aes(color="yellow",
+                                        fill="red",
+                                        size=0.5,
+                                        linetype=1,
+                                        alpha=.6)
             
 )
           
 
-geom_hurricane<-function(mapping = NULL, data = NULL, 
-                         stat = "StatHurricaneRadial",
-                         position = "identity", na.rm = FALSE, show.legend = NA, 
-                         inherit.aes = TRUE, ...){
+geom_hurricane<-function (mapping = NULL, 
+                          data = NULL, 
+                          stat = "identity",
+                          position = "identity", 
+                          ..., na.rm = FALSE, show.legend = NA, inherit.aes = TRUE) 
+{
+  #data=hurricane_geodesic(data)
   
-  layer(
-    stat = stat,geom=GeomHurricane, data = data, mapping = mapping, 
-    position = position, show.legend = show.legend, inherit.aes = inherit.aes,
-    params = list(na.rm = na.rm, ...)
-  ) 
-  
+  layer(data = data, mapping = mapping, stat = StatHurricaneRadial, geom = GeomHurricane, 
+        position = position, show.legend = show.legend, inherit.aes = inherit.aes, 
+        params = list(na.rm = na.rm, ...))
 }
