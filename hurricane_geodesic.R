@@ -38,8 +38,7 @@ hurricane_geodesic<-function(data,x="longitude",y="latitude",r_in="wind_inner_ra
     inner_pts$angle<-temp_s1
     inner_pts$radtype<-"inner"
     inner_pts$rad<-temp_d1
-    inner_pts<-inner_pts[order(inner_pts$angle),]
-    
+
     
     outer_pts<-data.frame(geosphere::destPoint(p=temp_p,
                                  d=temp_d2,
@@ -47,18 +46,16 @@ hurricane_geodesic<-function(data,x="longitude",y="latitude",r_in="wind_inner_ra
     outer_pts$angle<-temp_s2
     outer_pts$radtype<-"outer"
     outer_pts$rad<-temp_d2
-    outer_pts<-outer_pts[order(outer_pts$angle,decreasing = TRUE),]
-    
+
     points<-dplyr::bind_rows(inner_pts,outer_pts)
     points[,names(arc_data)]<-arc_data[i,]
     if (i==1) out<-points
     if(i>1) out<-dplyr::bind_rows(out,points)
   }#end for loop
   
-  out$quadrant<-factor(out$quadrant,levels=c("nw","sw","se","ne"))
-  out$order<-out$angle
-  out$order[out$radtype=="inner"]<- -out$order[out$radtype=="inner"]
-  out<-dplyr::arrange_(out,~wind_speed,~radtype,~quadrant,~order)
+  out$quadrant<-factor(out$quadrant,levels=c("ne","se","sw","nw"))
+  out<-dplyr::arrange_(out,~wind_speed,~radtype,~quadrant,~angle)
+  out<-dplyr::filter_(out,~rad>0)
   out$r_in<-NULL
   out$r_out<-NULL
   out$start_angle<-NULL

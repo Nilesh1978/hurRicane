@@ -81,30 +81,18 @@ storm_observation<-dplyr::filter_(tidy_ext_tracks,
                                   ~storm_name==hur_name,
                                   ~datehour==hur_datehour
                                   )
-plot_data<-hurricane_geodesic(storm_observation,arcRes = 90)                                  
+plot_data<-hurricane_geodesic(storm_observation,arcRes = .1)                                  
 
 
 
 p<-get_map("Louisiana", zoom = 6, maptype = "toner-background") %>%
-ggmap(extent = "device") + geom_polygon(data=filter(plot_data,wind_speed==34),
+ggmap(extent = "device") + geom_polygon(data=plot_data,
                                         mapping=aes(x=lon,y=lat,
                                                     fill=wind_speed,
-                                                    color=wind_speed
-                                                    #group=wind_speed
-                                                                   ),
-                                                      alpha=.7)+ 
+                                                    color=wind_speed)
+                                                      )+ 
                             scale_color_manual(name = "Wind speed (kts)", 
                                                          values = c("red", "orange", "yellow")) + 
                           scale_fill_manual(name = "Wind speed (kts)", 
                                                             values = c("red", "orange", "yellow"))
                    
-get_map("Louisiana", zoom = 6, maptype = "toner-background") %>%                     
-ggmap(extent = "device") + geom_hurricane(data=plot_data,stat="identity",
-                                          mapping=aes(x=lon,y=lat,r_in=wind_inner_rad,
-                                                      r_out=wind_outer_rad,quadrant=quadrant,
-                                                      wind_speed=wind_speed),
-alpha=.7)+ 
-  scale_color_manual(name = "Wind speed (kts)", 
-                     values = c("red", "orange", "yellow")) + 
-  scale_fill_manual(name = "Wind speed (kts)", 
-                    values = c("red", "orange", "yellow"))

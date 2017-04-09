@@ -8,15 +8,7 @@ GeomHurricane<-ggproto("GeomHurricane",Geom,
         
           #Just creating an inherited Polygon geom with default overrides
           #geom_ call will have stat_hurricane as default to do the heavy lifing
-          default_aes=aes(alpha=.4,arcRes=1)
-          
-          draw_group=function(data,panel_scales,coord){
-            
-            
-            
-            
-            
-          }
+          default_aes=aes(alpha=.4)
             
 )
           
