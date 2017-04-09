@@ -13,12 +13,12 @@ GeomHurricane<-ggproto("GeomHurricane",GeomPolygon,
           
 
 geom_hurricane<-function(mapping = NULL, data = NULL, 
-                         stat = "StatHurricaneRadial",geom="GeomHurricane",
+                         stat = "StatHurricaneRadial",
                          position = "identity", na.rm = FALSE, show.legend = NA, 
                          inherit.aes = TRUE, ...){
   
   layer(
-    stat = stat,geom=geom, data = data, mapping = mapping, 
+    stat = stat,geom=GeomHurricane, data = data, mapping = mapping, 
     position = position, show.legend = show.legend, inherit.aes = inherit.aes,
     params = list(na.rm = na.rm, ...)
   ) 

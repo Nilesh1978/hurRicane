@@ -31,17 +31,17 @@ hurricane_geodesic<-function(data,x="longitude",y="latitude",r_in="wind_inner_ra
     #This was necessary to plot the polygon in the right order;
     temp_s2<-temp_s1
     
-    points1<-data.frame(geosphere::geodesic(p=temp_p,
+    points1<-data.frame(geosphere::destPoint(p=temp_p,
                                  d=temp_d1,
-                                 azi=temp_s1))
+                                 b=temp_s1))
     points1$angle<-temp_s1
     points1$radtype<-"inner"
     points1$rad<-temp_d1
     points1<-points1[order(points1$angle),]
     
-    points2<-data.frame(geosphere::geodesic(p=temp_p,
+    points2<-data.frame(geosphere::destPoint(p=temp_p,
                                  d=temp_d2,
-                                 azi=temp_s2))
+                                 b=temp_s2))
     points2$angle<-temp_s2
     points2$radtype<-"outer"
     points2$rad<-temp_d2
@@ -52,11 +52,16 @@ hurricane_geodesic<-function(data,x="longitude",y="latitude",r_in="wind_inner_ra
     if (i==1) out<-points
     if(i>1) out<-dplyr::bind_rows(out,points)
   }#end for loop
+  out$quadrant<-factor(out$quadrant,levels=c("nw","sw","se","ne"))
+  out$order<-out$angle
+  out$order[out$radtype=="inner"]<- -out$order[out$radtype=="inner"]
+  out<-dplyr::arrange_(out,~wind_speed,~radtype,~quadrant,~order)
   out$r_in<-NULL
   out$r_out<-NULL
   out$start_angle<-NULL
   out$end_angle<-NULL
-  out$azimuth<-NULL
+  out$x<-NULL
+  out$y<-NULL
   out$wind_speed<-as.factor(out$wind_speed)
   return(out)
 }#end compute_group

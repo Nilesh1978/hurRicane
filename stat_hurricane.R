@@ -8,8 +8,8 @@
 #'
 #'
 StatHurricaneRadial<-ggproto("StatHurricaneRadial",Stat,
-            
-              require_aes = c("x","y","r_in","r_out","quadrant","wind_speed"),
+                  
+              required_aes = c("x","y","r_in","r_out","quadrant","wind_speed"),
               
               default_aes=aes(x="longitude",y="latitude",r_in="wind_inner_rad",
                               r_out="wind_outer_rad",quadrant="quadrant",
