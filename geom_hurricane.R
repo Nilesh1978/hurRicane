@@ -5,14 +5,36 @@
 #'
 #'
 GeomHurricane<-ggproto("GeomHurricane",GeomPolygon,
-                      required_aes = c("x","y","r","quadrant","wind_speed"),
+                      
+                       required_aes = c("x","y","r","quadrant","wind_speed"),
+                      
                       default_aes = aes(color="yellow",
                                         fill="red",
                                         size=0.5,
                                         linetype=1,
-                                        alpha=.6)
-                    
+                                        alpha=.6
+                                        ),
                       
+                      
+              
+                    draw_panel = function(data,panel_params,coord){
+                      
+                      GeomPolygon$draw_panel(data,panel_params,coord)
+                      
+                    },
+                      
+                      setup_data = function(data,params){
+                        
+                        #This isn't the most logical place to put the data
+                        #transform, but it is literally the only place it doesn't
+                        #cause an error. I have found no helpful documentaiton
+                        #in regards to troubleshooting custom stats/geoms.
+                        data<-hurricane_geodesic(storm_data=data,
+                                                 x="x",
+                                                 y="y",
+                                                 r="r",
+                                                 wind_speed="wind_speed")
+                      }
             
 )
           

@@ -7,7 +7,7 @@
 #'
 #'
 #'
-StatHurricaneRadial<-ggproto("StatHurricaneRadial",Stat,
+StatHurricane<-ggproto("StatHurricane",Stat,
                   
               required_aes = c("x","y","r","quadrant","wind_speed"),
 
@@ -84,11 +84,11 @@ StatHurricaneRadial<-ggproto("StatHurricaneRadial",Stat,
                   
 )#end StatHurricane ggproto() call
 
-stat_hurricane_radial <- function (mapping = NULL, data = NULL, geom = "GeomHurricane", 
+stat_hurricane<- function (mapping = NULL, data = NULL, geom = "GeomHurricane", 
                                    position = "identity", 
                                    ..., show.legend = NA, inherit.aes = TRUE) 
 {
-  layer(data = data, mapping = mapping, stat = StatHurricaneRadial, 
+  layer(data = data, mapping = mapping, stat = StatHurricane, 
         geom = geom, position = position, show.legend = show.legend, 
         inherit.aes = inherit.aes, params = list(na.rm = FALSE, 
                                                  ...))

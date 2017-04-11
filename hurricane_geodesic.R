@@ -1,18 +1,18 @@
 #
 #
-hurricane_geodesic<-function(data,x="longitude",y="latitude",r="wind_radius",
+hurricane_geodesic<-function(storm_data,x="longitude",y="latitude",r="wind_radius",
                                   quadrant="quadrant",wind_speed="wind_speed",
                                   arcRes=1){
-  
+
   #Renaming arguments to make referencing easier.
-  data<-dplyr::rename_(data,.dots=setNames(list(x,y,r,quadrant,wind_speed),
+  storm_data<-dplyr::rename_(storm_data,.dots=setNames(list(x,y,r,quadrant,wind_speed),
                                            c("x","y","r","quadrant","wind_speed")))
   
   # Step 1: Merge data needed for geodesic inputs with each record
   arc_data<-dplyr::data_frame(quadrant=c("ne","se","sw","nw"),
                               start_angle=c(0,90,180,270),
                               end_angle=c(90,180,270,360))
-  merged_data<-merge(data,arc_data,by="quadrant")
+  merged_data<-merge(storm_data,arc_data,by="quadrant")
   
   
   # Step 2: create points for polygon for each speed and the speed above it.
@@ -57,15 +57,15 @@ hurricane_geodesic<-function(data,x="longitude",y="latitude",r="wind_radius",
   }#end for loop
 } #End outer for loop 
   #Sort for plotting and remove collection of points at 0 (radius==zero)
-  
+
   out$quadrant<-factor(out$quadrant,levels=c("ne","se","sw","nw"))
   out<-dplyr::arrange_(out,~wind_speed,~radtype,~quadrant,~angle)
   out<-dplyr::filter_(out,~r>0)
   
   #Rename the lon/lat from destPoint() to the input variable name usually 
   #   longitude, latitude. Rename storm center coordinates to distinguish.
-  out<-dplyr::rename_(out,.dots=setNames(list(~lon,~lat),c(x,y)))
   out<-dplyr::rename_(out,.dots=setNames(list(~x,~y),c("eye_lon","eye_lat")))
+  out<-dplyr::rename_(out,.dots=setNames(list(~lon,~lat),c(x,y)))
   #clear out extra variables
   out$start_angle<-NULL
   out$end_angle<-NULL
