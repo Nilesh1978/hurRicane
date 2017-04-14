@@ -15,27 +15,27 @@ GeomHurricane<-ggproto("GeomHurricane",GeomPolygon,
                                         alpha=.6
                                         ),
                       
-                      
-              
-                    draw_panel = function(data,panel_params,coord){
-                      
-                      GeomPolygon$draw_panel(data,panel_params,coord)
-                      
-                    },
-                      
-                      setup_data = function(data,params){
+                    
+                      setup_data=function(data,arcRes=1,coord){
                         
-                        #This isn't the most logical place to put the data
-                        #transform, but it is literally the only place it doesn't
-                        #cause an error. I have found no helpful documentaiton
-                        #in regards to troubleshooting custom stats/geoms.
-                        data<-hurricane_geodesic(storm_data=data,
-                                                 x="x",
-                                                 y="y",
-                                                 r="r",
-                                                 wind_speed="wind_speed")
-                      }
-            
+                        temp<-hurricane_geodesic(storm_data=data,
+                            x="x",
+                            y="y",
+                            r="r",
+                            wind_speed="wind_speed")
+                        
+                        #I am recoding the group, colour, and fill since I converted
+                        #the whole data. If wanting to permit groups, need to find
+                        #better workaround.
+                        temp$group<-as.factor(temp$wind_speed)
+                        temp$colour<-as.factor(temp$wind_speed)
+                        temp$fill<-as.factor(temp$wind_speed)
+                        temp
+                        }
+                      
+                        
+                      
+                  
 )
           
 

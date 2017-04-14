@@ -69,7 +69,7 @@ hurricane_geodesic<-function(storm_data,x="longitude",y="latitude",r="wind_radiu
   #clear out extra variables
   out$start_angle<-NULL
   out$end_angle<-NULL
-  
+
   
   return(out)
 }#end compute_group
