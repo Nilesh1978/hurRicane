@@ -25,7 +25,7 @@ GeomHurricane<-ggplot2::ggproto("GeomHurricane",ggplot2::GeomPolygon,
                   setup_data=function(data,params,arc_step=1,scale_radii=1){
                        temp<-data
                        temp$r<-temp$r*scale_radii
-                       temp<-hurricane_geodesic(storm_data=data,
+                       temp<-hurricane_geocode(storm_data=data,
                            x="x",
                             y="y",
                             r="r",
