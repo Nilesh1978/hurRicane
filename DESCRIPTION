@@ -1,9 +1,12 @@
 Package: hurRicane
-Title: What the Package Does (one line, title case)
-Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
-Depends: R (>= 3.3.3)
-License: What license is it under?
-Encoding: UTF-8
-LazyData: true
+Type: Package
+Title: Geom and functions of creating hurricane wind speed radii (extend ggplot2)
+Version: 0.1.0
+Author: Josh Newkirk FCAS & Building Vizualization Tools(Coursera)
+Maintainer: Josh Newkirk <joshuanewkirk@uwalumni.com>
+Description: The tools in this package were designed to easily import and subset
+     data from the Colorado State extended hurricane tracks data.
+License: GPL
+Suggests: knitr, rmarkdown, testthat
+Imports: dplyr, tidyr, readr, maps, ggplot2, lubridate, grid, geosphere, stats
+RoxygenNote: 6.0.1
