@@ -1,6 +1,12 @@
 #set working directory
 pathname<-file.path(".","Week4Grob",fsep=.Platform$file.sep)
 setwd(pathname)
+
+#set libraries for assignment code
+library(dplyr)
+library(ggmap)
+library(hurRicane)
+
 #Import data
 ext_tracks<-read_ext_tracks(file="ebtrk_atlc_1988_2015.txt")
 

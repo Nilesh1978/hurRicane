@@ -7,7 +7,7 @@
 #'
 #' @import ggplot2
 #' @import grid
-#' 
+#' @export
 #'
 #'
 #'
@@ -67,7 +67,7 @@ GeomHurricane<-ggplot2::ggproto("GeomHurricane",ggplot2::GeomPolygon,
 #' I'm actually concerned this misrepresents the data since it appears that for a
 #' given region near the eye, the wind speeds are slower than what the data records.
 #'                     
-#'                               
+#' @export                             
 #'                                                   
 
 geom_hurricane<-function (mapping = NULL, 
