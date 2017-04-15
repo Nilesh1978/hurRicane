@@ -116,7 +116,7 @@ hurricane_geocode<-function(storm_data,x="longitude",y="latitude",r="wind_radius
   #clear out extra variables
   out$start_angle<-NULL
   out$end_angle<-NULL
-
+  out$quadrant<-as.character(out$quadrant)
   
   return(out)
 }#end compute_group

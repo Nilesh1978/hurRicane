@@ -5,8 +5,8 @@
 \title{This is the wrapper to the layer function for the GeomHurricane.}
 \usage{
 geom_hurricane(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", arc_step = 1, scale_radii = 1, ...,
-  na.rm = FALSE, show.legend = NA, inherit.aes = TRUE)
+  position = "identity", ..., na.rm = FALSE, show.legend = NA,
+  inherit.aes = TRUE)
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by \code{\link{aes}} or
@@ -34,17 +34,6 @@ layer, as a string.}
 \item{position}{Position adjustment, either as a string, or the result of
 a call to a position adjustment function.}
 
-\item{arc_step}{This regulates the resolution of the arcs in the wind_radii
-graph. See \code{\link{hurricane_geocode}} function, specificall arcRes argument
-as this is passed into that function to transform data in the underlying
-GeomHurricane}
-
-\item{scale_radii}{This is per the assignemnt instructions to implement a way
-to scale the radius size. I'm honestly not sure why you would want to reduce all
-the radii to 80%, 90% etc. of their original size, but the assignment wanted it.
-I'm actually concerned this misrepresents the data since it appears that for a
-given region near the eye, the wind speeds are slower than what the data records.}
-
 \item{...}{other arguments passed on to \code{\link{layer}}. These are
 often aesthetics, used to set an aesthetic to a fixed value, like
 \code{color = "red"} or \code{size = 3}. They may also be parameters
@@ -61,8 +50,25 @@ a warning. If \code{TRUE}, missing values are silently removed.}
 rather than combining with them. This is most useful for helper functions
 that define both data and aesthetics and shouldn't inherit behaviour from
 the default plot specification, e.g. \code{\link{borders}}.}
+
+\item{arc_step}{This regulates the resolution of the arcs in the wind_radii
+graph. See \code{\link{hurricane_geocode}} function, specificall arcRes argument
+as this is passed into that function to transform data in the underlying
+GeomHurricane}
+
+\item{scale_radii}{This is per the assignemnt instructions to implement a way
+to scale the radius size. I'm honestly not sure why you would want to reduce all
+the radii to 80%, 90% etc. of their original size, but the assignment wanted it.
+I'm actually concerned this misrepresents the data since it appears that for a
+given region near the eye, the wind speeds are slower than what the data records.}
 }
 \description{
 The wrapper is just to plot the object. See \code{ggplot2} package documenation
 for more specifics on geom_* and layer_* functions.
+}
+\note{
+It is possible to overwrite the color scale of the wind radius bands,
+IT IS NOT possible, nor practical, to set a fill nor color in the \code{aes()}
+call. These are used internally to geom_hurricane to propely design the chart.
+Overriding these values are going to unexpected results.
 }

@@ -29,16 +29,33 @@ storm_observation<-dplyr::filter_(tidy_ext_tracks,
 myloc<-unique(c(storm_observation$longitude,storm_observation$latitude))
 
 p<-get_map(location=myloc,
-           zoom = 6, maptype = "toner-background") %>%
+           zoom =6 , maptype = "toner-background") %>%
 ggmap(extent = "device")+geom_hurricane(data=storm_observation,
                                         mapping=aes(x=longitude,y=latitude,
                                                     r=wind_radius,
                                                     wind_speed=wind_speed,
-                                                    quadrant=quadrant),
-                                        arc_step=45)+
-                                                     
+                                                    quadrant=quadrant,
+                                                    fill=as.factor(wind_speed),
+                                                    color=as.factor(wind_speed)))+
                             scale_color_manual(name = "Wind speed (kts)", 
-                                                         values = c("red", "orange", "yellow")) + 
+                                                 values = c("red", "orange", "yellow")) + 
                           scale_fill_manual(name = "Wind speed (kts)", 
                                                             values = c("red", "orange", "yellow"))
+p  
+
+#This shows how the scale_radii works
+p<-get_map(location=myloc,
+           zoom =6 , maptype = "toner-background") %>%
+  ggmap(extent = "device")+geom_hurricane(data=storm_observation,
+                                          mapping=aes(x=longitude,y=latitude,
+                                                      r=wind_radius,
+                                                      wind_speed=wind_speed,
+                                                      quadrant=quadrant,
+                                                      fill=as.factor(wind_speed),
+                                                      color=as.factor(wind_speed),
+                                                      scale_radii=.25))+
+  scale_color_manual(name = "Wind speed (kts)", 
+                     values = c("red", "orange", "yellow")) + 
+  scale_fill_manual(name = "Wind speed (kts)", 
+                    values = c("red", "orange", "yellow"))
 p  

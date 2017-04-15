@@ -7,41 +7,71 @@
 #'
 #' @import ggplot2
 #' @import grid
+#' @importFrom dplyr select
+#' @importFrom dplyr left_join
 #' @export
 #'
 #'
 #'
-GeomHurricane<-ggplot2::ggproto("GeomHurricane",ggplot2::GeomPolygon,
+GeomHurricane<-ggplot2::ggproto("GeomHurricane",GeomPolygon,
                       
-                       required_aes = c("x","y","r","quadrant","wind_speed"),
-                       
-                       default_aes = ggplot2::aes(color="yellow",
-                                        fill="red",
-                                        size=0.5,
-                                        linetype=1,
-                                        alpha=.6
+                       required_aes = c("x","y","r","quadrant","wind_speed"
                                         ),
+                       
+                       default_aes = aes(fill="red",
+                                         colour="red",
+                                         size=0.5,
+                                         linetype=1,
+                                         alpha=.5,
+                                         arc_step=1,
+                                         scale_radii=1
+                                        ),
+                  
                   #Transforming data as necessary to plot    
-                  setup_data=function(data,params,arc_step=1,scale_radii=1){
-                       temp<-data
-                       temp$r<-temp$r*scale_radii
-                       temp<-hurricane_geocode(storm_data=data,
-                           x="x",
-                            y="y",
-                            r="r",
-                            wind_speed="wind_speed",
-                            arcRes=arc_step)
-                        
-                        #I am recoding the group, colour, and fill since I converted
-                        #the whole data. If wanting to permit groups, need to find
-                        #better workaround.
-                        temp$group<-as.factor(temp$wind_speed)
-                        temp$colour<-as.factor(temp$wind_speed)
-                        temp$fill<-as.factor(temp$wind_speed)
-                        
-                        temp
-                        
-                        }
+                  draw_panel = function(self,data,panel_scales,coord){
+                   
+                    extravars<-dplyr::select_(data,~-x,~-y,~-r)
+                    
+                    temp<-data
+                    temp$r<-temp$r*temp$scale_radii
+                   
+                    
+                    #Generate geocoded points
+                    temp<-hurricane_geocode(storm_data=temp,
+                                            x="x",
+                                            y="y",
+                                            r="r",
+                                            wind_speed="wind_speed",
+                                            quadrant="quadrant",
+                                           arcRes=temp$arc_step[1])
+                    
+                    #Merge in original aes() mapping
+                    #However, overwriting any attempt to fill or color by
+                    #something other than wind_speed
+                    
+                    temp<-dplyr::select_(temp,~x,~y,~wind_speed,~quadrant)
+                    
+                    extravars$quadrant<-factor(extravars$quadrant,
+                                               levels=c("ne","se","sw","nw"))
+                    
+                    extravars$wind_speed<-as.factor(extravars$wind_speed)
+                    
+                    temp$quadrant<-factor(temp$quadrant,
+                                          levels=c("ne","se","sw","nw"))
+                    
+                    temp$wind_speed<-as.factor(temp$wind_speed)
+                    
+                    temp<-dplyr::left_join(temp,extravars,
+                                           by=c("wind_speed","quadrant"))
+                    
+                    #force group by wind_speed to make polygons smooth                             
+                    temp$group<-temp$wind_speed
+                    
+                    
+                    ggplot2:::ggname("geom_polygon",
+                                     GeomPolygon$draw_panel(temp, panel_scales, coord)) 
+                  }
+                  
                       
                         
                       
@@ -66,7 +96,12 @@ GeomHurricane<-ggplot2::ggproto("GeomHurricane",ggplot2::GeomPolygon,
 #' the radii to 80%, 90% etc. of their original size, but the assignment wanted it.
 #' I'm actually concerned this misrepresents the data since it appears that for a
 #' given region near the eye, the wind speeds are slower than what the data records.
-#'                     
+#' 
+#' @note It is appropriate to always include a call to \code{fill} and \code{color}
+#' within the mapping, set equal to \code{wind_speed} data to produce desirable
+#' color scheme of assignment. Furthermore, you will need to set scale_fill_manual
+#' to make the colors logical for your view.            
+#'                                                             
 #' @export                             
 #'                                                   
 
@@ -74,7 +109,6 @@ geom_hurricane<-function (mapping = NULL,
                           data = NULL, 
                           stat = "identity",
                           position = "identity",
-                          arc_step=1,scale_radii=1,
                           ..., na.rm = FALSE, show.legend = NA, inherit.aes = TRUE){
 
   
@@ -82,6 +116,5 @@ geom_hurricane<-function (mapping = NULL,
         geom = GeomHurricane, 
         position = position, show.legend = show.legend, inherit.aes = inherit.aes,
         params = list(na.rm = na.rm,
-                      arc_step=arc_step,scale_radii=scale_radii,
-                      ...))
+                              ...))
 }
